@@ -10,6 +10,7 @@ class PhysicalObject;
 class PhysicalObject
 {
 public:
+    PhysicalObject(std::vector<Player*> &objects) : m_PhysicalObjects(objects) {};
     void    updatePosition(float dt)
     {
         for (auto &object : m_PhysicalObjects)
@@ -50,10 +51,10 @@ public:
             const float radius = 400.0f;
             const glm::vec2 to_obj = object->position - pos;
             const float dist = glm::length(to_obj);
-            if (dist > radius - 50.0f)
+            if (dist > radius - 20.0f)
             {
                 const glm::vec2 n = to_obj / dist;
-                object->position = object->position - n * (dist - radius + 50.0f);
+                object->position = object->position - n * (dist - radius + 20.0f);
             }
         }
     }
@@ -69,10 +70,10 @@ public:
                 Player* object2 = m_PhysicalObjects[k];
                 const glm::vec2 collision_axis = object1->position - object2->position;
                 const float dist = glm::length(collision_axis);
-                if (dist < 100.0f)
+                if (dist < 40.0f)
                 {
                     const glm::vec2 n = collision_axis / dist;
-                    const float delta = 100.0f - dist;
+                    const float delta = 40.0f - dist;
                     object1->position += 0.5f * delta * n;
                     object2->position -= 0.5f * delta * n;
                 }
@@ -80,5 +81,5 @@ public:
         }
     }
 public:
-    std::vector<Player*> m_PhysicalObjects;
+    std::vector<Player*> &m_PhysicalObjects;
 };

@@ -16,7 +16,8 @@ public:
         struct timeval  m_Time;
         gettimeofday(&m_Time, NULL);
         srand(m_Time.tv_usec + m_Time.tv_sec);
-        return (min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min))));
+        std::cout << min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min))) << std::endl;
+        return min + static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX/(max-min)));
     }
     [[nodiscard]]
     static glm::vec3 getRandomVec3(float min, float max)
@@ -27,6 +28,16 @@ public:
         vec.z = getRandomFloat(min, max);
         return vec;        
     }
+    [[nodiscard]]
+    static glm::vec2 getRandomVec2(float min, float max)
+    {
+        glm::vec2 vec;
+        vec.x = getRandomFloat(min, max);
+        vec.y = getRandomFloat(min, max);
+        return vec;        
+    }
+
+    [[nodiscard]]
     static int getRainbow(float t)
     {
         const float r = sin(t);

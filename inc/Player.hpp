@@ -26,6 +26,6 @@ public:
     glm::vec2   position;
     glm::vec2   oldPosition;
     glm::vec2   m_Acceleration;
-    glm::vec2   m_Gravity = {0, 100};
+    glm::vec2   m_Gravity = {0, 200};
 private:
 };

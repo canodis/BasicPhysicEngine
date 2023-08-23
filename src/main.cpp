@@ -19,51 +19,43 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
-void    player_movement()
+void    player_movement(float dt)
 {
     if (keystates[GLFW_KEY_W])
-        player.position.y -= 1;
+        player.position.y -= 10 * dt;
     if (keystates[GLFW_KEY_S])
-        player.position.y += 1;
+        player.position.y += 10 * dt;
     if (keystates[GLFW_KEY_A])
-        player.position.x -= 1;
+        player.position.x -= 10 * dt;
     if (keystates[GLFW_KEY_D])
-        player.position.x += 1;
+        player.position.x += 10 * dt;
 }
 
 Player  *createPlayer(float radius, int segments)
 {
-    Player *p = new Player({Random::getRandomFloat(SCREEN_WIDTH / 2 - 300, SCREEN_WIDTH / 2 + 300), Random::getRandomFloat(SCREEN_HEIGHT / 2 - 300, SCREEN_HEIGHT / 2 + 300)});
+    Player *p = new Player({Random::getRandomFloat(SCREEN_WIDTH / 2 - 100, SCREEN_WIDTH / 2 + 100), SCREEN_HEIGHT / 2});
     *p = scene->gameobjectManager->create2dCircleColor(radius, glm::vec4(Random::getRandomVec3(0.3f, 1), 1), segments);
+    std::cout << "Size : " << p->size << std::endl;
     return (p);
-}
-
-void    initObjects(std::vector<Player*> &objects, int count)
-{
-    for (int i = 0; i < count; i++)
-    {
-        Player *player = createPlayer(50, 100);
-        objects.push_back(player);
-    }
 }
 
 int main(int ac, char **av)
 {
     scene = new Scene(SCREEN_WIDTH, SCREEN_HEIGHT);
     Timer timer;
-    PhysicalObject ps;
 
     std::vector<Player*> objects;
-    initObjects(objects, 20);
     GLuint texture = scene->textureManager->loadTexture("textures/grass_block.png", GL_RGBA);
-    player = scene->gameobjectManager->create2dCircleColor(50, glm::vec4(1,0,0,1), 100);
+    player = scene->gameobjectManager->create2dCircleColor(20, glm::vec4(1,0,0,1), 100);
     object = scene->gameobjectManager->create2dCircleColor(400, glm::vec4(0, 0, 0, 1), 100);
     object.position = glm::vec2(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
     scene->shaderProgram->addUniform("ObjTransform");
     glm::vec2 normalizedCoordinates;
     objects.push_back(&player);
     glfwSetKeyCallback(scene->window, key_callback);
-    ps.m_PhysicalObjects = objects;
+    PhysicalObject ps(objects);
+    double totalTime = 0;
+    glfwSwapInterval(0);
     while (glfwGetKey(scene->window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(scene->window))
     {
         glClearColor(185.0f/255.0f, 185.0f/255.0f, 185.0f/255.0f, 1.0f);
@@ -73,7 +65,13 @@ int main(int ac, char **av)
         scene->shaderProgram->setVec2("ObjTransform", glm::vec2(normalizedCoordinates.x, normalizedCoordinates.y));
         object.draw();
         double elapsedTime = timer.elapsedSeconds();
-        player_movement();
+        totalTime += elapsedTime;
+        if ((int)totalTime >= 1)
+        {
+            objects.push_back(createPlayer(20, 100));
+            totalTime = 0;
+        }
+        player_movement(elapsedTime);
         ps.update(elapsedTime);
         for (auto& obj : objects)
         {

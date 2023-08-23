@@ -14,6 +14,7 @@ protected:
     friend  GameobjectManager;
 public:
     GLuint textureIndex;
+    float size;
     Gameobject();
     ~Gameobject();
     void    draw();

@@ -125,5 +125,6 @@ Gameobject* GameobjectManager::create2dCircleColor(float radius, glm::vec4 color
     gameobject->m_Vao = vao;
     gameobject->m_IndexCount = gameobject->m_Vao->getIndexCount();
     gameobject->m_VertexCount = gameobject->m_Vao->getVertexCount();
+    gameobject->size = radius;
     return gameobject;
 }
